@@ -6,14 +6,28 @@
     <title>График настроений</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        body {
+            font-size: 2em !important;
+        }
+
         canvas {
             width: 1800px !important;
-            height: 800px !important;
+            height: 600px !important;
+        }
+
+        /* Увеличиваем размер шрифта на графике */
+        .chartjs-text {
+            font-size: 2em !important;
+        }
+
+        /* Увеличиваем размер шрифта в легенде */
+        .chartjs-legend-text {
+            font-size: 2em !important;
         }
     </style>
 </head>
 <body>
-    <div style="width: 100%; margin: 0 auto;">
+    <div style="width: 90%; margin: 0 auto;">
         <canvas id="moodChart"></canvas>
     </div>
 
@@ -48,18 +62,21 @@
                         label: 'Положительно',
                         data: data.Positive,
                         borderColor: 'green',
+                        borderWidth: 4, // Устанавливаем ширину линии
                         backgroundColor: 'rgba(0, 128, 0, 0.5)',
                     },
                     {
                         label: 'Нейтрально',
                         data: data.Neutral,
                         borderColor: 'blue',
+                        borderWidth: 4, // Устанавливаем ширину линии
                         backgroundColor: 'rgba(0, 0, 128, 0.5)',
                     },
                     {
                         label: 'Негативно',
                         data: data.Negative,
                         borderColor: 'red',
+                        borderWidth: 4, // Устанавливаем ширину линии
                         backgroundColor: 'rgba(255, 0, 0, 0.5)',
                     },
                     {
@@ -73,13 +90,34 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 20 // Устанавливаем размер шрифта для оси Y
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 20 // Устанавливаем размер шрифта для оси X
+                            }
+                        }
                     }
                 },
                 responsive: true,
-                maintainAspectRatio: false // Убедитесь, что график остается в заданных размерах без соблюдения пропорций
+                maintainAspectRatio: false, // Убедитесь, что график остается в заданных размерах без соблюдения пропорций
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 20 // Устанавливаем размер шрифта в легенде
+                            }
+                        }
+                    }
+                }
             }
         });
     </script>
 </body>
-</html
+</html>
