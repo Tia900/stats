@@ -1,62 +1,85 @@
-import pandas as pd
-import matplotlib.pyplot as plt
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>График настроений</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            width: 1800px !important;
+            height: 800px !important;
+        }
+    </style>
+</head>
+<body>
+    <div style="width: 100%; margin: 0 auto;">
+        <canvas id="moodChart"></canvas>
+    </div>
 
-# Данные по опросам из телеграм-канала
-data = {
-    'Date': [
-        '10.10.2023', '19.10.2023', '26.10.2023', '03.11.2023', '10.11.2023', '17.11.2023',
-        '23.11.2023', '01.12.2023', '08.12.2023', '15.12.2023', '22.12.2023', '29.12.2023',
-        '05.01.2024', '12.01.2024', '19.01.2024', '26.01.2024', '02.02.2024'
-    ],
-    'Positive': [
-        31, 21, 44, 41, 31, 55, 35, 31, 48, 35, 39, 39, 39, 25, 24, 28, 24
-    ],
-    'Neutral': [
-        61, 50, 37, 47, 63, 28, 47, 44, 26, 24, 17, 17, 17, 37, 29, 28, 41
-    ],
-    'Negative': [
-        8, 29, 19, 12, 6, 17, 18, 25, 26, 41, 44, 44, 44, 37, 47, 44, 35
-    ],
-    'Voters': [
-        13, 14, 16, 17, 16, 18, 17, 16, 19, 17, 18, 0, 0, 16, 17, 18, 17
-    ]
-}
+    <script>
+        const data = {
+            'Date': [
+                '10.10.2023', '19.10.2023', '26.10.2023', '03.11.2023', '10.11.2023', '17.11.2023',
+                '23.11.2023', '01.12.2023', '08.12.2023', '15.12.2023', '22.12.2023', '29.12.2023',
+                '05.01.2024', '12.01.2024', '19.01.2024', '26.01.2024', '02.02.2024'
+            ],
+            'Positive': [
+                31, 21, 44, 41, 31, 55, 35, 31, 48, 35, 39, 39, 39, 25, 24, 28, 24
+            ],
+            'Neutral': [
+                61, 50, 37, 47, 63, 28, 47, 44, 26, 24, 17, 17, 17, 37, 29, 28, 41
+            ],
+            'Negative': [
+                8, 29, 19, 12, 6, 17, 18, 25, 26, 41, 44, 44, 44, 37, 47, 44, 35
+            ],
+            'Voters': [
+                13, 14, 16, 17, 16, 18, 17, 16, 19, 17, 18, 0, 0, 16, 17, 18, 17
+            ]
+        };
 
-# Создаем DataFrame из данных выше
-df = pd.DataFrame(data)
-
-# Конвертируем 'Date' в datetime и устанавливаем как индекс
-df['Date'] = pd.to_datetime(df['Date'], format='%d.%m.%Y')
-df.set_index('Date', inplace=True)
-
-# Создаем фигуру и оси для графика
-fig, ax1 = plt.subplots(figsize=(15, 6))
-
-# Построение цветного графика для настроений
-ax1.plot(df.index, df['Positive'], marker='o', linestyle='-', color='green', label='Положительно')
-ax1.plot(df.index, df['Neutral'], marker='s', linestyle='-', color='blue', label='Нейтрально')
-ax1.plot(df.index, df['Negative'], marker='^', linestyle='-', color='red', label='Негативно')
-
-# Устанавливаем метки на оси X согласно датам из DataFrame
-ax1.set_xticks(df.index)
-ax1.set_xticklabels([date.strftime('%d-%m-%Y') for date in df.index], rotation=45)
-
-ax1.set_xlabel('Дата', fontsize=14)
-ax1.set_ylabel('Процент проголосовавших', fontsize=14)
-ax1.tick_params(axis='y', labelcolor='black')
-ax1.legend(loc='upper left')
-ax1.grid(True)
-
-# Вторая ось Y для количества голосов
-ax2 = ax1.twinx()
-ax2.bar(df.index, df['Voters'], width=1, alpha=0.3, color='grey', label='Опрашиваемые')
-ax2.set_ylabel('Количество проголосовавших', fontsize=14)
-ax2.tick_params(axis='y', labelcolor='black')
-ax2.legend(loc='upper right')
-
-# Заголовок графика
-ax1.set_title('Статистика настроений продуктового офиса', fontsize=16)
-
-# Отображаем график
-plt.tight_layout()
-plt.show()
+        var ctx = document.getElementById('moodChart').getContext('2d');
+        var moodChart = new Chart(ctx, {
+            type: 'line', // Используем линейный тип графика
+            data: {
+                labels: data.Date,
+                datasets: [
+                    {
+                        label: 'Положительно',
+                        data: data.Positive,
+                        borderColor: 'green',
+                        backgroundColor: 'rgba(0, 128, 0, 0.5)',
+                    },
+                    {
+                        label: 'Нейтрально',
+                        data: data.Neutral,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 128, 0.5)',
+                    },
+                    {
+                        label: 'Негативно',
+                        data: data.Negative,
+                        borderColor: 'red',
+                        backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                    },
+                    {
+                        label: 'Опрашиваемые',
+                        type: 'bar', // Для количества опрашиваемых используем столбчатый тип графика
+                        data: data.Voters,
+                        backgroundColor: 'grey',
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false // Убедитесь, что график остается в заданных размерах без соблюдения пропорций
+            }
+        });
+    </script>
+</body>
+</html
